@@ -27,8 +27,6 @@ class Post_Announcement_Database_Access {
 		global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
         $table_name = Post_Announcement_Database_Access::get_table_name();
-
-        if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 	        $sql = "CREATE TABLE $table_name ( 
 	            id mediumint(9) NOT NULL AUTO_INCREMENT,
 	            title varchar(40) NOT NULL,
@@ -41,7 +39,6 @@ class Post_Announcement_Database_Access {
 	            
 	        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	        dbDelta( $sql );
-    	}
 	}
 
 	public static function insert_data($title = 'New Ad', $content = 'Your first announcement', $start_date = NULL){
@@ -61,6 +58,24 @@ class Post_Announcement_Database_Access {
         $charset_collate = $wpdb->get_charset_collate();
         $table_name = $wpdb->prefix . Post_Announcement_Database_Access::$base_table_name;
         return $table_name;
+	}
+
+	public static function get_table_rows($orderby = NULL, $order = NULL){
+		global $wpdb;
+		$table_name = Post_Announcement_Database_Access::get_table_name();
+		$sql = "SELECT * FROM $table_name";
+
+		if(!empty($orderby) & !empty($order)){
+			$sql.=' ORDER BY '.$orderby.' '.$order; 
+		}
+		return $wpdb->get_results($sql, ARRAY_A);
+	}
+
+	public static function get_number_of_rows(){
+		global $wpdb;
+		$table_name = Post_Announcement_Database_Access::get_table_name();
+		$sql = "SELECT * FROM $table_name";
+		return $wpdb->query($sql);
 	}
 }
 ?>

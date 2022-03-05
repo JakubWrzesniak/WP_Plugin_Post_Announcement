@@ -111,7 +111,24 @@ class Post_Announcement_Admin {
 	 */
 	public function register_management_page() {
 		// Create our setup page.
-		add_menu_page( 'Post Announcement Page', 'Announcement', 'manage_options', 'post-announcement', array( $this, 'display_management_page') );
+		$main_page_hook = add_menu_page( 
+			__( 'Post Announcement', $this->plugin_text_domain),
+			__( 'Post Announcement', $this->plugin_text_domain),
+			'manage_options', 
+			$this->plugin_name, 
+			array( $this, 'display_management_page') 
+		);
+
+		add_submenu_page(
+			$this->plugin_name,
+			__( 'Add new',  $this->plugin_text_domain),
+			__( 'Add new',  $this->plugin_text_domain),
+			'manage_options',
+			$this->plugin_name.'-add',
+			array( $this, 'display_new_announcement_page')
+		);
+
+		add_action( 'load-'.$main_page_hook, array( $this, 'load_announcement_list_table_screen_options' ) );
 	}
 
 	/**
@@ -120,9 +137,23 @@ class Post_Announcement_Admin {
 	 * @since    1.0.0
 	 */
 	public function display_management_page() {
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/post-announcement-admin-display.php';
+		$this->announcement_list_table->prepare_items();
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/post-announcement-admin-display.php';
 
 	}
 
+  	public function load_announcement_list_table_screen_options() {
+  		require_once plugin_dir_path( __FILE__ ) . 'class-post-announcement-admin-list.php';
+		$arguments = array(
+					'label'		=>	__( 'Announcement Per Page', $this->plugin_text_domain ),
+					'default'	=>	5,
+					'option'	=>	'announcement_per_page'
+		);
+		add_screen_option( 'per_page', $arguments );
+		$this->announcement_list_table = new Post_Announcement_List( $this->plugin_text_domain );		
+	}
+
+	public function display_new_announcement_page(){
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/post-announcement-admin-display.php';
+	}
 }
