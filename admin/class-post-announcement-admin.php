@@ -154,6 +154,36 @@ class Post_Announcement_Admin {
 	}
 
 	public function display_new_announcement_page(){
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/post-announcement-admin-display.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/post-announcement-admin-an-form.php';
 	}
+
+	public function handle_announcement_post_action(){
+		if ( isset( $_POST[ 'announcement_add_nonce' ] ) && wp_verify_nonce( $_POST['announcement_add_nonce'], 'announcement_form_nonce') ) {
+			$pa_id = sanitize_key( $_POST['pa']['id']);
+			$pa_title = sanitize_text_field( $_POST['pa']['title']);
+			$pa_content = sanitize_textarea_field( $_POST['pa']['content']);
+			$pa_startdate = sanitize_text_field( $_POST['pa']['startdate']);
+		    $pa_startdate = filter_var( $pa_startdate, FILTER_SANITIZE_STRING);
+			$pa_enddate = sanitize_text_field( $_POST['pa']['enddate']);
+			$pa_enddate = filter_var( $pa_enddate, FILTER_SANITIZE_STRING);
+			require_once plugin_dir_path( __FILE__ ) . '/../includes/class-post-announcement-databse-access.php';
+			if( !empty( $pa_id ) ){
+
+			} else {
+				Post_Announcement_Database_Access::insert_data($pa_title, $pa_content, $pa_startdate, $pa_enddate, 1);
+			}
+
+			$admin_notice = "success";
+			//$this->custom_redirect( $admin_notice, $_POST );
+			wp_redirect( '"'.home_url().'/wp-admin/admin.php?page=post-announcement"', 301 );
+			exit;
+		} else {
+			wp_die( __( 'Invalid nonce specified', $this->plugin_name ), __( 'Error', $this->plugin_name ), array(
+						'response' 	=> 403,
+						'back_link' => 'admin.php?page=' . $this->plugin_name,
+
+				) );
+		}
+	}
+
 }

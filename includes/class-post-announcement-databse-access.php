@@ -41,7 +41,7 @@ class Post_Announcement_Database_Access {
 	        dbDelta( $sql );
 	}
 
-	public static function insert_data($title = 'New Ad', $content = 'Your first announcement', $start_date = NULL){
+	public static function insert_data($title = 'New Ad', $content = 'Your first announcement', $start_date = NULL, $end_date = NULL, $isactive = 0){
 		global $wpdb;
 		$start_date = $start_date ? $start_date : current_time( 'mysql' );
 		$table_name = Post_Announcement_Database_Access::get_table_name();
@@ -49,7 +49,8 @@ class Post_Announcement_Database_Access {
             'title' => $title,
             'content' => $content,
             'startdate' => $start_date,
-            'isactive' => 0,
+            'enddate' => $end_date,
+            'isactive' => $isactive,
         ));
 	}
 

@@ -13,7 +13,6 @@
  */
 ?>
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
-<h1>Manage Posts Annoncement</h1>
 <div class="wrap">    
     <h2><?php _e('Post Announcement', $this->plugin_text_domain); ?></h2>
         <div id="post-announcement-list-table">           
