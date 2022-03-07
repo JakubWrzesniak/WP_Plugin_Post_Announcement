@@ -72,9 +72,6 @@ class Post_Announcement_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		if ( 'tools_page_post_announcement' != $hook ) {
-			return;
-		}
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/post-announcement-admin.css', array(), $this->version, 'all' );
 
 	}
@@ -97,9 +94,10 @@ class Post_Announcement_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		if ( 'tools_page_post_announcement' != $hook ) {
-			return;
-		}
+		$params = array ( 'ajaxurl' => admin_url( 'admin-ajax.php' ) );
+		wp_enqueue_script( 'ps_ajax_handle', plugin_dir_url( __FILE__ ) . 'js/post-announcement-admin-ajax-hendler.js', array( 'jquery' ), $this->version, false );				
+		wp_localize_script( 'ps_ajax_handle', 'params', $params );
+
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/post-announcement-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
@@ -159,7 +157,7 @@ class Post_Announcement_Admin {
 
 	public function handle_announcement_post_action(){
 		if ( isset( $_POST[ 'announcement_add_nonce' ] ) && wp_verify_nonce( $_POST['announcement_add_nonce'], 'announcement_form_nonce') ) {
-			$pa_id = sanitize_key( $_POST['pa']['id']);
+			$pa_id = sanitize_text_field( $_POST['pa']['id']);
 			$pa_title = sanitize_text_field( $_POST['pa']['title']);
 			$pa_content = sanitize_textarea_field( $_POST['pa']['content']);
 			$pa_startdate = sanitize_text_field( $_POST['pa']['startdate']);
@@ -168,7 +166,7 @@ class Post_Announcement_Admin {
 			$pa_enddate = filter_var( $pa_enddate, FILTER_SANITIZE_STRING);
 			require_once plugin_dir_path( __FILE__ ) . '/../includes/class-post-announcement-databse-access.php';
 			if( !empty( $pa_id ) ){
-
+				Post_Announcement_Database_Access::update_row($id = intval($pa_id), $title = $pa_title, $pa_content, $pa_startdate, $pa_enddate);
 			} else {
 				Post_Announcement_Database_Access::insert_data($pa_title, $pa_content, $pa_startdate, $pa_enddate, 1);
 			}
@@ -184,6 +182,19 @@ class Post_Announcement_Admin {
 
 				) );
 		}
+	}
+
+	public function handle_announcement_post_delete(){
+		//$permission = check_ajax_referer( 'announcement_delete_nonce', 'nonce', false );
+		//if( $permission == false ) {
+		//	echo 'error';
+		//}
+		//else {
+			require_once plugin_dir_path( __FILE__ ) . '/../includes/class-post-announcement-databse-access.php';
+			Post_Announcement_Database_Access::delete_row( $_REQUEST['id'] );
+			echo 'success';
+		//}
+		die();
 	}
 
 }

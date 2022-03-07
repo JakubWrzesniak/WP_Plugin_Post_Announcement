@@ -97,7 +97,26 @@ class Post_Announcement_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/post-announcement-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name.'_ap', plugin_dir_url( __FILE__ ) . 'js/post-announcement-public-ap-container.js', array( 'jquery' ), $this->version, true );
+		$this->load_announcement();
+	}
 
+
+	public function load_announcement(){
+		if('post' == get_post_type()){
+			require_once plugin_dir_path( __FILE__ ) . '/../includes/class-post-announcement-databse-access.php';
+			$res = Post_Announcement_Database_Access::get_announcement_in_date( current_time( 'mysql' ) );
+			if(!empty($res)){
+				shuffle($res);
+				$announce = $res[0];
+				wp_localize_script( $this->plugin_name.'_ap', 'php_vars', 
+				  	array( 
+						'pa_title' => $announce['title'],
+						'pa_content' => $announce['content'],
+					) 
+				 );
+			}
+		}
 	}	
 
 }

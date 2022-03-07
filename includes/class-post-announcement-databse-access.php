@@ -54,6 +54,24 @@ class Post_Announcement_Database_Access {
         ));
 	}
 
+	public static function update_row($id, $title = NULL, $content = NULL, $start_date = NULL, $end_date = NULL, $isactive = NULL){
+		global $wpdb;
+		$update_array = array();
+		if ($title != NULL){$update_array['title'] = $title;};
+		if ($content != NULL){$update_array['content'] = $content;};
+		if ($start_date != NULL){$update_array['startdate'] = $start_date;};
+		if ($end_date != NULL){$update_array['enddate'] = $end_date;};
+		if ($isactive != NULL){$update_array['isactive'] = $isactive;};
+		$table_name = Post_Announcement_Database_Access::get_table_name();
+		$wpdb->update($table_name, $update_array, array('id'=>$id));
+	}
+
+	public static function delete_row($id){
+		global $wpdb;
+		$table_name = $wpdb->prefix . Post_Announcement_Database_Access::$base_table_name;
+		return $wpdb->delete($table_name, array('id'=>$id), array( '%d' ));
+	}
+
 	public static function get_table_name(){
 		global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
@@ -72,11 +90,27 @@ class Post_Announcement_Database_Access {
 		return $wpdb->get_results($sql, ARRAY_A);
 	}
 
+	public static function get_row( $id ){
+		global $wpdb;
+		$table_name = Post_Announcement_Database_Access::get_table_name();
+		$sql = "SELECT * FROM $table_name WHERE id LIKE $id";
+		$res = $wpdb->get_results($sql, ARRAY_A);
+		return empty($res) ? NULL : $res[0]; 
+	}
+
 	public static function get_number_of_rows(){
 		global $wpdb;
 		$table_name = Post_Announcement_Database_Access::get_table_name();
 		$sql = "SELECT * FROM $table_name";
 		return $wpdb->query($sql);
+	}
+
+	public static function get_announcement_in_date($date){
+		global $wpdb;
+		$table_name = Post_Announcement_Database_Access::get_table_name();
+		$sql = "SELECT id, title, content FROM $table_name WHERE startdate < \"$date\" AND enddate > \"$date\"";
+		$res = $wpdb->get_results($sql, ARRAY_A);
+		return $res;
 	}
 }
 ?>

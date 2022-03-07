@@ -15,6 +15,7 @@
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 <div class="wrap">    
     <h2><?php _e('Post Announcement', $this->plugin_text_domain); ?></h2>
+    <div id='ps_form_feedback'></div>
         <div id="post-announcement-list-table">           
             <div id="post-announcement-post-body">        
                 <form id="post-announcement-list-form" method="get"> 

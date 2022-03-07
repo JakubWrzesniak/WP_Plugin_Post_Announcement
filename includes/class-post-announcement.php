@@ -155,6 +155,7 @@ class Post_Announcement {
 		$plugin_admin = new Post_Announcement_Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_management_page');
 		$this->loader->add_action( 'admin_post_announcement_form_response', $plugin_admin, 'handle_announcement_post_action');
+		$this->loader->add_action( 'wp_ajax_post_announcement_form_response', $plugin_admin, 'handle_announcement_post_delete');
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
@@ -173,7 +174,6 @@ class Post_Announcement {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 	}
 
 	/**

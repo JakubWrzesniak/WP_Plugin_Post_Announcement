@@ -4,7 +4,18 @@
 	 */
 	class Post_Announcement_List extends WP_List_Table
 	{
+
+		function __construct() {
+			global $status, $page;
+			parent::__construct(
+			array(
+				'singular'	=> 'announcement',
+				'plural'	=> 'announcements',
+				'ajax'		=> true
+			)
+		);
 		
+	}
 
 		public function get_columns() {
 		  	$columns= array(
@@ -13,6 +24,7 @@
 		       'startdate'=>__('Start Date', $this->plugin_text_domain),
 		       'enddate'=>__('End date', $this->plugin_text_domain),
 		       'isactive'=>__('Is active', $this->plugin_text_domain),
+		       'action'=>__('', $this->plugin_text_domain),
 		    );
 
 		    return $columns;
@@ -77,10 +89,27 @@
 		 			return $item[$column_name];
 		 		case 'isactive':
 		 			return $item[$column_name] ? 'true' : 'false';
+		 		case 'action':
+		 			return column_action( $item );
 		 		default:
 		 		  return $item[$column_name];
 		 	}
-		 }
+		}
+
+		public function column_action( $item ){
+			$edit_link = admin_url( 'admin.php?page=post-announcement-add&amp;action=edit&amp;id=' . $item['id']);
+			$output = '';
+			$actions = array(
+				'edit' => '<a href="' . esc_url( $edit_link ) . '">' . esc_html__('Edit', $this->plugin_text_domain) . '</a>', 
+				'delete' => '<a href="#" data-id="' . $item['id'] . '" data-nonce="' . wp_create_nonce( 'announcement_delete_nonce' ) . '" class="an-delete" >' . esc_html__('Delete', $this->plugin_text_domain) . '</a>',
+			);
+			$row_actions = array();
+			foreach ( $actions as $action => $link ) {
+           		$row_actions[] = '<span class="' . esc_attr( $action ) . '">' . $link . '</span>';
+        	}
+        	$output .= '<div class="row-actions">' . implode( ' | ', $row_actions ) . '</div>';
+        	return $output;
+		}
 
 		public function filter_table_data( $table_data, $search_key ) {
 			$filtered_table_data = array_values( array_filter( $table_data, function( $row ) use( $search_key ) {
@@ -91,7 +120,6 @@
 				}			
 			} ) );
 			return $filtered_table_data;
-
 		}
-	}
+}
 ?>
