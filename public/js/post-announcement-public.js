@@ -7,12 +7,8 @@
 	    var new_container = document.createElement('div');
 	    var titile_container = document.createElement('h3');
 	    var content_container = document.createElement('p');
-	    new_container.classList.add('wp-container');
+	    new_container.classList.add('wp-container-post-announcement');
 	    new_container.classList.add('wp-block-group');
-	    new_container.setAttribute('id','ad_container');
-	    titile_container.setAttribute('id','ad_title');
-	    content_container.setAttribute('id','ad_content');
-
 	    titile_container.textContent = php_vars.pa_title;
 	    content_container.textContent = php_vars.pa_content;
 
