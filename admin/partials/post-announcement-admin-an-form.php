@@ -47,6 +47,10 @@
                                 <tr>
                                     <td><label for="enddate">End date: </label></td>
                                     <td><input type="datetime-local" name="<?php echo "pa"; ?>[enddate]" id="enddate" value="<?php if(!empty($item) && isset($item['enddate'])){echo date('Y-m-d\Th:m:s', strtotime($item['enddate']));}; ?>"></td>    
+                                </tr> 
+                                <tr>
+                                    <td><label for="isactive">Is active: </label></td>
+                                    <td><input type="checkbox" name="<?php echo "pa"; ?>[isactive]" id="isactive" value="1" <?php if(!empty($item) && isset($item['isactive']) && $item['isactive'] == 1){echo 'checked';};?>></td>    
                                 </tr>   
                                 <tr>
                                     <td/>

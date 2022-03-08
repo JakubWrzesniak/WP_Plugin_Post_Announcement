@@ -23,8 +23,9 @@
 		       'content'=>__('Content', $this->plugin_text_domain),
 		       'startdate'=>__('Start Date', $this->plugin_text_domain),
 		       'enddate'=>__('End date', $this->plugin_text_domain),
-		       'isactive'=>__('Is active', $this->plugin_text_domain),
-		       'action'=>__('', $this->plugin_text_domain),
+		       'isactive'=>__('Enabled/Disabled', $this->plugin_text_domain),
+		       'enable' => __('Currently Active', $this->plugin_text_domain),
+		       'action'=>__('Action', $this->plugin_text_domain),
 		    );
 
 		    return $columns;
@@ -35,7 +36,7 @@
 		       'name'=>'title',
 		       'startdate'=>'startdate',
 		       'enddate'=>'enddate',
-		       'isactive'=>'isactive'
+		       'isactive'=>'isactive',
 		    );
 		 }
 
@@ -44,12 +45,10 @@
 		}
 
   		public function prepare_items() {
-
-  			$search_key = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : '';
+  			//$search_key = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : '';
 
   		  	$this->_column_headers = $this->get_column_info();		
 
-  		  	$this->handle_table_actions();
 
   		  	$table_data = $this->fetch_table_data();
 
@@ -59,7 +58,7 @@
 
       	    $this->items = $table_data;
 
-      	    $announcement_per_page = $this->get_items_per_page( 'announcement_per_page' );
+      	    $announcement_per_page = $this->get_items_per_page( 'announcement_per_page', 10 );
 			$table_page = $this->get_pagenum();
 			$this->items = array_slice( $table_data, ( ( $table_page - 1 ) * $announcement_per_page ), $announcement_per_page );
 
@@ -87,10 +86,12 @@
 		 		case 'startdate':
 		 		case 'enddate':
 		 			return $item[$column_name];
-		 		case 'isactive':
-		 			return $item[$column_name] ? 'true' : 'false';
+		 		case 'isactive': 
+		 			return '<input disabled type="checkbox" name="isactive" id="isactive" value="1" ' . ($item[$column_name] == 1 ? ' checked ' : '') . '>'; 
 		 		case 'action':
 		 			return column_action( $item );
+		 		case 'enable':
+		 			return column_enable( $item );
 		 		default:
 		 		  return $item[$column_name];
 		 	}
@@ -109,6 +110,16 @@
         	}
         	$output .= '<div class="row-actions">' . implode( ' | ', $row_actions ) . '</div>';
         	return $output;
+		}
+
+		public function column_enable( $item ){
+			$currentDate = current_time( 'Y-m-d H:i:s' );
+			if( $item['isactive'] == 1 ){
+				if ( $item['startdate'] < $currentDate && $item['enddate'] >  $currentDate){
+					return '<p class="pa_success_text" >active</p>';
+				}
+			}
+			return '<p class="pa_danger_text" >Inactive</p>';;
 		}
 
 		public function filter_table_data( $table_data, $search_key ) {

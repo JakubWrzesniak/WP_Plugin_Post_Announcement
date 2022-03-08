@@ -140,6 +140,7 @@ class Post_Announcement_Admin {
 
 	}
 
+
   	public function load_announcement_list_table_screen_options() {
   		require_once plugin_dir_path( __FILE__ ) . 'class-post-announcement-admin-list.php';
 		$arguments = array(
@@ -147,6 +148,7 @@ class Post_Announcement_Admin {
 					'default'	=>	5,
 					'option'	=>	'announcement_per_page'
 		);
+
 		add_screen_option( 'per_page', $arguments );
 		$this->announcement_list_table = new Post_Announcement_List( $this->plugin_text_domain );		
 	}
@@ -164,11 +166,12 @@ class Post_Announcement_Admin {
 		    $pa_startdate = filter_var( $pa_startdate, FILTER_SANITIZE_STRING);
 			$pa_enddate = sanitize_text_field( $_POST['pa']['enddate']);
 			$pa_enddate = filter_var( $pa_enddate, FILTER_SANITIZE_STRING);
+			$is_active =  isset($_POST['pa']['isactive']) ? intval($_POST['pa']['isactive']) : 0;
 			require_once plugin_dir_path( __FILE__ ) . '/../includes/class-post-announcement-databse-access.php';
 			if( !empty( $pa_id ) ){
-				Post_Announcement_Database_Access::update_row($id = intval($pa_id), $title = $pa_title, $pa_content, $pa_startdate, $pa_enddate);
+				Post_Announcement_Database_Access::update_row($id = intval($pa_id), $title = $pa_title, $pa_content, $pa_startdate, $pa_enddate, $is_active);
 			} else {
-				Post_Announcement_Database_Access::insert_data($pa_title, $pa_content, $pa_startdate, $pa_enddate, 1);
+				Post_Announcement_Database_Access::insert_data($pa_title, $pa_content, $pa_startdate, $pa_enddate, 0);
 			}
 
 			$admin_notice = "success";

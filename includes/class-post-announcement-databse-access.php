@@ -44,6 +44,7 @@ class Post_Announcement_Database_Access {
 	public static function insert_data($title = 'New Ad', $content = 'Your first announcement', $start_date = NULL, $end_date = NULL, $isactive = 0){
 		global $wpdb;
 		$start_date = $start_date ? $start_date : current_time( 'mysql' );
+		$end_date = date('Y-m-d H:i:s', strtotime("+7 days"));
 		$table_name = Post_Announcement_Database_Access::get_table_name();
         $res = $wpdb->insert($table_name, array(
             'title' => $title,
@@ -57,11 +58,11 @@ class Post_Announcement_Database_Access {
 	public static function update_row($id, $title = NULL, $content = NULL, $start_date = NULL, $end_date = NULL, $isactive = NULL){
 		global $wpdb;
 		$update_array = array();
-		if ($title != NULL){$update_array['title'] = $title;};
-		if ($content != NULL){$update_array['content'] = $content;};
-		if ($start_date != NULL){$update_array['startdate'] = $start_date;};
-		if ($end_date != NULL){$update_array['enddate'] = $end_date;};
-		if ($isactive != NULL){$update_array['isactive'] = $isactive;};
+		if (isset($title)){$update_array['title'] = $title;};
+		if (isset($content)){$update_array['content'] = $content;};
+		if (isset($start_date)){$update_array['startdate'] = $start_date;};
+		if (isset($end_date)){$update_array['enddate'] = $end_date;};
+		if (isset($isactive)){$update_array['isactive'] = $isactive;};
 		$table_name = Post_Announcement_Database_Access::get_table_name();
 		$wpdb->update($table_name, $update_array, array('id'=>$id));
 	}
@@ -105,10 +106,10 @@ class Post_Announcement_Database_Access {
 		return $wpdb->query($sql);
 	}
 
-	public static function get_announcement_in_date($date){
+	public static function get_active_announcement_in_date($date){
 		global $wpdb;
 		$table_name = Post_Announcement_Database_Access::get_table_name();
-		$sql = "SELECT id, title, content FROM $table_name WHERE startdate < \"$date\" AND enddate > \"$date\"";
+		$sql = "SELECT id, title, content FROM $table_name WHERE startdate < \"$date\" AND enddate > \"$date\" AND isactive LIKE 1";
 		$res = $wpdb->get_results($sql, ARRAY_A);
 		return $res;
 	}

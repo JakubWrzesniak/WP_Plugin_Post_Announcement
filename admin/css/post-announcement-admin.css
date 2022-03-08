@@ -2,3 +2,13 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.pa_danger_text{
+    color:  red!important;
+    font-weight: bold;
+}
+
+.pa_success_text{
+    color:  green!important;
+    font-weight: bold;
+}

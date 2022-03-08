@@ -105,7 +105,7 @@ class Post_Announcement_Public {
 	public function load_announcement(){
 		if('post' == get_post_type()){
 			require_once plugin_dir_path( __FILE__ ) . '/../includes/class-post-announcement-databse-access.php';
-			$res = Post_Announcement_Database_Access::get_announcement_in_date( current_time( 'mysql' ) );
+			$res = Post_Announcement_Database_Access::get_active_announcement_in_date( current_time( 'mysql' ) );
 			if(!empty($res)){
 				shuffle($res);
 				$announce = $res[0];
