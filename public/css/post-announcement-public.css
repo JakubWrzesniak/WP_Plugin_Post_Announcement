@@ -6,4 +6,6 @@
 .wp-container-post-announcement {
 	background-color: pink;
 	padding: 20px;
+    margin-bottom: 50px !important;
+    text-align: center;
 }
