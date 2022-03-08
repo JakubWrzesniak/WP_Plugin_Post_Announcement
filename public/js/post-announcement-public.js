@@ -9,8 +9,8 @@
 	    var content_container = document.createElement('p');
 	    new_container.classList.add('wp-container-post-announcement');
 	    new_container.classList.add('wp-block-group');
-	    titile_container.textContent = php_vars.pa_title;
-	    content_container.textContent = php_vars.pa_content;
+	    titile_container.innerHTML = php_vars.pa_title;
+	    content_container.innerHTML = php_vars.pa_content;
 
 	    new_container.appendChild(titile_container);
 	    new_container.appendChild(content_container);

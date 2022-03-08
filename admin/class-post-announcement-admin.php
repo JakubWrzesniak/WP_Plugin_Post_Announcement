@@ -161,7 +161,7 @@ class Post_Announcement_Admin {
 		if ( isset( $_POST[ 'announcement_add_nonce' ] ) && wp_verify_nonce( $_POST['announcement_add_nonce'], 'announcement_form_nonce') ) {
 			$pa_id = sanitize_text_field( $_POST['pa']['id']);
 			$pa_title = sanitize_text_field( $_POST['pa']['title']);
-			$pa_content = sanitize_textarea_field( $_POST['pa']['content']);
+			$pa_content = wp_kses( $_POST['pa']['content'], wp_kses_allowed_html());
 			$pa_startdate = sanitize_text_field( $_POST['pa']['startdate']);
 		    $pa_startdate = filter_var( $pa_startdate, FILTER_SANITIZE_STRING);
 			$pa_enddate = sanitize_text_field( $_POST['pa']['enddate']);

@@ -36,10 +36,10 @@
                                     <td><label for="title">Name: </label></td>
                                     <td><input required type="text" name="<?php echo "pa"; ?>[title]" id="title" value="<?php echo empty($item) ? '' : $item['title']; ?>"></td>
                                 </tr>
-                                <tr>
+                            <!--     <tr>
                                     <td><label for="content">Content: </label></td>
                                     <td><textarea name="<?php echo "pa"; ?>[content]" id="content" rows="3" cols="50"> <?php if(!empty($item)){echo $item['content'];} ;?> </textarea></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td><label for="startdate">Start Date: </label></td>
                                     <td><input required type="datetime-local" name="<?php echo "pa"; ?>[startdate]" id="startdate" value="<?php if(!empty($item)){echo date('Y-m-d\Th:m:s', strtotime($item['startdate']));}; ?>"></td>
@@ -51,11 +51,40 @@
                                 <tr>
                                     <td><label for="isactive">Is active: </label></td>
                                     <td><input type="checkbox" name="<?php echo "pa"; ?>[isactive]" id="isactive" value="1" <?php if(!empty($item) && isset($item['isactive']) && $item['isactive'] == 1){echo 'checked';};?>></td>    
-                                </tr>   
+                                </tr>  
                                 <tr>
-                                    <td/>
-                                    <td><input id="submit" class="button button-primary" type="submit" name="submit"></td>  
-                                </tr> 
+                                    <td><label for="pa[content]">Content </label></td>
+                                    <td>
+                                    <?php 
+                                        $content = $item['content'];
+                                        $editor_id = 'pa_content';
+                                        $settings =   array(
+                                             'wpautop' => true, // enable auto paragraph?
+                                           //  'media_buttons' => false, // show media buttons?
+                                             'textarea_name' => 'pa[content]', // id of the target textarea
+                                             'textarea_rows' => 3, // This is equivalent to rows="" in HTML
+                                           //  'tabindex' => '',
+                                            // 'editor_css' => '', //  additional styles for Visual and Text editor,
+                                            // 'editor_class' => '', // sdditional classes to be added to the editor
+                                             'teeny' => true, // show minimal editor
+                                            // 'dfw' => false, // replace the default fullscreen with DFW
+                                            // 'tinymce' => array(
+                                            //     // Items for the Visual Tab
+                                            //     'toolbar1'=> 'bold,italic,underline,bullist,numlist,unlink,forecolor,undo,redo,',
+                                            // ),
+                                         //    'quicktags' => array(
+                                            //     // Items for the Text Tab
+                                          //       'buttons' => 'strong,em,underline,ul,ol,li,code'
+                                           //  )
+                                        );
+                                        wp_editor($content,$editor_id, $settings);   
+                                    ?> 
+                                    </td>
+                                    </tr>
+                                         <tr>
+                                        <td/>
+                                        <td><input id="submit" class="button button-primary" type="submit" name="submit"></td>  
+                                    </tr> 
                             </form>
                         </tbody>
                     </table>
