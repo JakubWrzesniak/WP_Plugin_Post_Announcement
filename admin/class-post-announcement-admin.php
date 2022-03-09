@@ -161,7 +161,8 @@ class Post_Announcement_Admin {
 		if ( isset( $_POST[ 'announcement_add_nonce' ] ) && wp_verify_nonce( $_POST['announcement_add_nonce'], 'announcement_form_nonce') ) {
 			$pa_id = sanitize_text_field( $_POST['pa']['id']);
 			$pa_title = sanitize_text_field( $_POST['pa']['title']);
-			$pa_content = wp_kses( $_POST['pa']['content'], wp_kses_allowed_html());
+			//$pa_content = wp_kses( $_POST['pa']['content'], wp_kses_allowed_html());
+			$pa_content = $_POST['pa']['content'];
 			$pa_startdate = sanitize_text_field( $_POST['pa']['startdate']);
 		    $pa_startdate = filter_var( $pa_startdate, FILTER_SANITIZE_STRING);
 			$pa_enddate = sanitize_text_field( $_POST['pa']['enddate']);
@@ -171,7 +172,7 @@ class Post_Announcement_Admin {
 			if( !empty( $pa_id ) ){
 				Post_Announcement_Database_Access::update_row($id = intval($pa_id), $title = $pa_title, $pa_content, $pa_startdate, $pa_enddate, $is_active);
 			} else {
-				Post_Announcement_Database_Access::insert_data($pa_title, $pa_content, $pa_startdate, $pa_enddate, 0);
+				Post_Announcement_Database_Access::insert_data($pa_title, $pa_content, $pa_startdate, $pa_enddate, $is_active);
 			}
 
 			$admin_notice = "success";
