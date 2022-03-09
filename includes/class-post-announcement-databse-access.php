@@ -63,6 +63,9 @@ class Post_Announcement_Database_Access {
 		if (isset($start_date)){$update_array['startdate'] = $start_date;};
 		if (isset($end_date)){$update_array['enddate'] = $end_date;};
 		if (isset($isactive)){$update_array['isactive'] = $isactive;};
+		if ($end_date <= $start_date){
+			wp_die( 'Start date: '.$start_date.' can\'t be after end date: '.$end_date.' <a href="'.wp_get_referer().'">Back to edit page</a>' );
+		}
 		$table_name = Post_Announcement_Database_Access::get_table_name();
 		$wpdb->update($table_name, $update_array, array('id'=>$id));
 	}
