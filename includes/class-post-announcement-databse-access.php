@@ -43,6 +43,7 @@ class Post_Announcement_Database_Access {
 
 	public static function insert_data($title = 'New Ad', $content = 'Your first announcement', $start_date = NULL, $end_date = NULL, $isactive = 0){
 		global $wpdb;
+		Post_Announcement_Database_Access::valid_date($start_date, $end_date);
 		$start_date = $start_date ? $start_date : current_time( 'mysql' );
 		$end_date = date('Y-m-d H:i:s', strtotime("+7 days"));
 		$table_name = Post_Announcement_Database_Access::get_table_name();
@@ -58,16 +59,21 @@ class Post_Announcement_Database_Access {
 	public static function update_row($id, $title = NULL, $content = NULL, $start_date = NULL, $end_date = NULL, $isactive = NULL){
 		global $wpdb;
 		$update_array = array();
+		Post_Announcement_Database_Access::valid_date($start_date, $end_date);
 		if (isset($title)){$update_array['title'] = $title;};
 		if (isset($content)){$update_array['content'] = $content;};
 		if (isset($start_date)){$update_array['startdate'] = $start_date;};
 		if (isset($end_date)){$update_array['enddate'] = $end_date;};
 		if (isset($isactive)){$update_array['isactive'] = $isactive;};
+		$table_name = Post_Announcement_Database_Access::get_table_name();
+		$wpdb->update($table_name, $update_array, array('id'=>$id));
+	}
+
+	public static function valid_date($start_date, $end_date) {
 		if ($end_date <= $start_date){
 			wp_die( 'Start date: '.$start_date.' can\'t be after end date: '.$end_date.' <a href="'.wp_get_referer().'">Back to edit page</a>' );
 		}
-		$table_name = Post_Announcement_Database_Access::get_table_name();
-		$wpdb->update($table_name, $update_array, array('id'=>$id));
+
 	}
 
 	public static function delete_row($id){
